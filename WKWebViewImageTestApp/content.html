@@ -1,0 +1,35 @@
+<!doctype html>
+
+<head>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+</head>
+<html>
+<body>
+    <script>
+        function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function () { document.documentElement.removeChild(WVJBIframe) }, 0)
+        }
+
+        setupWebViewJavascriptBridge(function (bridge) {
+            bridge.callHandler('image', { 'key': 'value' }, function responseCallback(responseData) {
+                var html = [
+                ];
+                html += '<img src="data:image/png;base64,'
+                html += responseData
+                html += '" alt="PNG"/>'
+                document.getElementById("content").innerHTML = html
+            })
+        })
+    </script>
+    <div id="content">
+    </div>
+</body>
+
+</html>
